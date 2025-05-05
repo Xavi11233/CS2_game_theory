@@ -1,0 +1,28 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Counter Strike 2 Game Theory
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Xavier
+    family-names: Austin
+  - given-names: Alexander
+    family-names: Griffiths
+  - given-names: Isaac
+    family-names: Davies
+  - given-names: Maxwell
+    family-names: Clarke-Lewis
+repository-code: 'https://github.com/Xavi11233/CS2_game_theory.git'
+url: 'https://github.com/Xavi11233/CS2_game_theory'
+abstract: >-
+  This code gives some starting points to analysis of
+  various strategies in the popular game Counter Strike 2,
+  and how they interact against each other in a two team
+  game.
+keywords:
+  - Game Theory
+date-released: '2025-05-05'
