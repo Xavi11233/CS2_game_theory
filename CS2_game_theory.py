@@ -13,6 +13,13 @@ complete_options_list = [
                         [0.95, 0.85, 0.75, 0.50]
                         ]
 
+complete_casual_options_list = [
+                                [0.50, 0.45, 0.30, 0.20],
+                                [0.55, 0.50, 0.45, 0.30],
+                                [0.70, 0.55, 0.50, 0.40],
+                                [0.80, 0.70, 0.60, 0.50]
+                                ]
+
 win_rewards = [2, 1.5, 1, 1]
 loss_rewards = [1.5, 0.5, -0.5, -2]
 
@@ -145,10 +152,10 @@ def two_player_game(player1_strat, player2_strat, starting_points=(0, 0), starti
             #print("player "+str(loser)+" loses and recieves a loss bonus of "+str([losses_bonus1,losses_bonus2][loser-1]))
             #print("player "+str((loser%2)+1)+" wins and maintains a loss bonus of "+str([losses_bonus2,losses_bonus1][(loser-1)]))
             #print(losses_bonus1,losses_bonus2)
-            #print(points_over_time)
             points_over_time.append([points[0], points[1]])
             money_over_time.append([money[0],money[1]])
             round_number += 1
+            #print(points_over_time)
 
     else:
         while round_number < play_to:
@@ -199,19 +206,38 @@ def two_player_game(player1_strat, player2_strat, starting_points=(0, 0), starti
             money[0] = min(money[0],max_money)
             money[1] = min(money[1],max_money)
             #print("game matrix:\n"+str(game_matrix)+"\np1 strat: "+str(p1_choice+1)+"\np2 strat: "+str(p2_choice+1)+"\n roll: "+str(roll))
+            #print(round_number)
             #print("player "+str(loser)+" loses and recieves a loss bonus of "+str([losses_bonus1,losses_bonus2][loser-1]))
             #print("player "+str((loser%2)+1)+" wins and maintains a loss bonus of "+str([losses_bonus2,losses_bonus1][(loser-1)]))
             #print(losses_bonus1,losses_bonus2)
-            #print(points_over_time)
             points_over_time.append([points[0], points[1]])
             money_over_time.append([money[0],money[1]])
             round_number += 1
+            #print(points_over_time)
 
     return points_over_time.copy(), money_over_time.copy()
 
 def extensive_form_game_into_normal_form_2_rounds(eco_player1, eco_player2, loss_reward_mult_player1, loss_reward_mult_player2):
     """
-    Explanation...
+    Takes the current economy of both players and the loss reward multipliers for both players and returns the index of the best option for 
+    player 1 to play in the current round by considering the expected outcomes of the next two rounds.
+
+    Parameters
+    ----------
+    eco_player1 : int or float
+        The economy of player 1 at this stage of the game.
+    eco_player2 : int or float
+        The economy of player 2 at this stage of the game.
+    loss_reward_mult_player1 : int or float
+        The loss reward multiplier for player 1 at the current stage of the game.
+    loss_reward_mult_player2 : int or float
+        The loss reward multiplier for player 2 at the currnet stage of the game.
+    
+    Returns
+    -------
+    int
+        The index of the best option for player 1 to play in the current round.
+    
     """
     outcome_game_win_matrix = []
     outcome_game_loss_matrix = []
@@ -222,8 +248,10 @@ def extensive_form_game_into_normal_form_2_rounds(eco_player1, eco_player2, loss
             loss_current_player2eco = eco_player2 + loss_reward_mult_player2 * 0.5 + loss_rewards[j]
             loss_current_player1eco = eco_player1 + loss_reward_mult_player1 * 0.5 + loss_rewards[i]
             win_current_player2eco = eco_player2 + win_rewards[j]
-            p1_win_matrix = (np.multiply(gen_opts(win_current_player1eco, loss_current_player2eco), starting_game_matrix[i][j]) + starting_game_matrix[i][j]).tolist()
-            p1_loss_matrix = (np.multiply(gen_opts(loss_current_player1eco, win_current_player2eco), (1 - starting_game_matrix[i][j])) + starting_game_matrix[i][j]).tolist()     #how to add a set number to every element in a matrix / nested list
+            p1_win_matrix = (np.multiply(gen_opts(win_current_player1eco, loss_current_player2eco), 
+                                         starting_game_matrix[i][j]) + starting_game_matrix[i][j]).tolist()
+            p1_loss_matrix = (np.multiply(gen_opts(loss_current_player1eco, win_current_player2eco), 
+                                          (1 - starting_game_matrix[i][j])) + starting_game_matrix[i][j]).tolist()
             outcome_game_win_matrix.append(p1_win_matrix)
             outcome_game_loss_matrix.append(p1_loss_matrix)
 
@@ -479,9 +507,9 @@ def support_enumerator_strat2(round_number, eco, op_eco, game_matrix, player0_or
     equilibria = nash.Game(game_matrix).support_enumeration()
     eq = next(equilibria)
     strat = list(eq)
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     #print(f"player {player0_or_1} has strat:{strat[player0_or_1]} giving odds {complete_options_list[list(strat[player0_or_1]).index(1)]}")
     return strat[player0_or_1]
@@ -494,9 +522,9 @@ def eco_til_4_strat2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0
     strat = [0, 0, 0, 1]
     if eco < 4:
         strat = [1] + [0] * min(int(eco) - 1, 3)
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
@@ -508,9 +536,9 @@ def eco_til_n_eco2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, 
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if eco < n:
         strat = [1] + [0] * min(int(eco) - 1, 3)
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
@@ -522,9 +550,9 @@ def eco_first_n_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0, 
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if round_number < n:
         strat = [1] + [0] * min(int(eco) - 1, 3)
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
     
@@ -538,9 +566,9 @@ def eco_first_n_rounds_and_stay_above_m_eco2(round_number, eco, op_eco, game_mat
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if round_number <= n or eco < m:
         strat = [1] + [0] * min(int(eco) - 1, 3)
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
@@ -557,9 +585,9 @@ def bi4nxt2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_
         strat = [1] + [0] * min(int(eco) - 1, 3)
     if eco > 3.5:
         strat = [0, 0, 0, 1]
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
@@ -572,9 +600,9 @@ def never_half2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, los
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0, first_half=False)
     else:
         strat = [0, 1, 0]
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
@@ -587,9 +615,9 @@ def eco_if_down_on_money2(round_number, eco, op_eco, game_matrix, player0_or_1=0
         strat = [1] + [0] * min(int(eco) - 1, 3)
     else:
         strat = min(int(eco) - 1, 3) * [0] + [1]
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
@@ -601,9 +629,9 @@ def bi4nxt_2_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5
     strat = [0] * min(int(eco), 4)
     index_of_choice = extensive_form_game_into_normal_form_2_rounds(eco, op_eco, losses_bonus1, losses_bonus2)
     strat[index_of_choice] = 1
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
@@ -613,9 +641,9 @@ def eco_til_death2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, 
     """
     eco_til_death2.stratname = "champ 2"
     strat = [1] + [0] * min(int(eco) - 1, 3)
-    if round_number == 13:
+    if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
-    if round_number == 12 and first_half == True:
+    if round_number == 11 and first_half == True:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
@@ -653,6 +681,7 @@ def accurate_cs_game(strat1, strat2, n=5, loss_bonuses=True):
                                                         first_to_or_set_number="set number", play_to=12, n=n, loss_bonuses=loss_bonuses)
     accurate_cs_game.player1choices.append(two_player_game.player1choices)
     accurate_cs_game.player2choices.append(two_player_game.player2choices)
+    accurate_cs_game.first_half = False
     next_half_points_over_time, next_half_money_over_time = two_player_game(player1_strat=strat1, player2_strat=strat2, 
                                                                             starting_points=(0, 0),starting_money=(1, 1), max_money=16, 
                                                                             first_to_or_set_number="set number", play_to=13, n=n, 
@@ -971,7 +1000,7 @@ def display_interaction_matrix(matrix, strategies):
     for i in range(0, len(matrix)):
         print (f"{strategies[i].stratname:30} {matrix[i]}")
 
-def replicator_dynamics(game_matrix, iterations=100, intervals=100):
+def replicator_dynamics(game_matrix, iterations=100, samples=100):
     """
     Uses nashpy replicator dynamics with the interaction matrix to show which strategies survive over time.
 
@@ -980,9 +1009,9 @@ def replicator_dynamics(game_matrix, iterations=100, intervals=100):
     game_matrix : list
         A list of lists representing our matrix with win rates for each strategy against each other strategy.
     iterations : int, optional
-        The number of games that we consider looking at the replicator dynamics, by default 100. again ?????????????????????
-    intervals : int, optional
-        The space between each things???????????????????????????????????????????????????????????????????????????????????????
+        The number of games that we run replicator dynamics for, by default 100.
+    samples : int, optional
+        How frequently we want to sample the population, by default 100.
 
     Returns
     -------
@@ -990,9 +1019,9 @@ def replicator_dynamics(game_matrix, iterations=100, intervals=100):
         The population distribution of all strategies over time.
 
     """
-    timepoints = np.linspace(0, iterations, intervals)
+    timepoints = np.linspace(0, iterations, samples)
     game = nash.Game(game_matrix)
-    replicator_game = game.replicator_dynamics(y0=[1 / 19, 1 / 19, 1 / 19, 1 / 19, 1 / 19, 2 / 19, 2 / 19, 1 / 19, 1 / 19, 2 / 19, 1 / 19, 1 / 19, 2 / 19, 2 / 19, 1 / 19, 1 / 19, 1 / 19, 1 / 19], timepoints=timepoints)
+    replicator_game = game.replicator_dynamics(y0=[1 / 19, 1 / 19, 1 / 19, 1 / 19, 1 / 19, 2 / 19, 2 / 19, 1 / 19, 1 / 19, 2 / 19, 1 / 19, 1 / 19, 2 / 19, 2 / 19, 1 / 19, 1 / 19, 2 / 19, 1 / 19, 1 / 19], timepoints=timepoints)
     return replicator_game
     
 def replicator_dynamics_graph(outcome_array, strat_names):
@@ -1025,3 +1054,25 @@ def replicator_dynamics_graph(outcome_array, strat_names):
     mplcursors.cursor(fig, hover=True)
 
     plt.show()
+
+
+# Replicator dynamics stuff:
+strategies = [short_term, eco_first_n_rounds, eco_first_n_rounds_then_lil_then_short_term, eco_first_n_rounds_then_half_then_short_term,
+             eco_if_down_on_money, eco_til_4_strat, eco_til_n_eco, eco_first_n_rounds_and_stay_above_m_eco, random_strat, bi4nxt, 
+             never_half, eco_if_down_on_money2, eco_til_4_strat2, eco_til_n_eco2, eco_first_n_rounds2, 
+             eco_first_n_rounds_and_stay_above_m_eco2, bi4nxt2, never_half2, eco_til_death2]
+
+interaction_mat = generate_interaction_matrix(strategies, n=3, sample_size=5_000, accurate_game=True)
+display_interaction_matrix(interaction_mat, strategies)
+
+game_outcome = replicator_dynamics(game_matrix=interaction_mat, iterations=5_000, samples=5_000)
+stratnames = []
+for i in strategies:
+    stratnames.append(i.stratname)
+replicator_dynamics_graph(game_outcome, stratnames)
+
+#-------------------------------------------------------------------------------------------------------------------------------------------
+
+scores, money = accurate_cs_game(strat1=eco_til_n_eco, strat2=eco_til_n_eco2, n=5, loss_bonuses=True)
+team1score, team2score, team1money, team2money = unpack_points_over_time_and_money_over_time(scores, money)
+graph_it_out(team1score, team2score, team1money, team2money, strat1=bi4nxt, strat2=eco_til_n_eco2, first_to=13, max_money=16)
