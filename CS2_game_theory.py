@@ -335,7 +335,7 @@ def extensive_form_game_into_normal_form_2_rounds(eco_player1, eco_player2, loss
 
 def support_enumerator_strat(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    Pick first equilibria it finds, dunno if this should be a stratergy...
+    A strategy which picks short term nash equilibria for the current round.
     """
     support_enumerator_strat.stratname = "support enumerated"
     equilibria = nash.Game(game_matrix).support_enumeration()
@@ -346,12 +346,7 @@ def support_enumerator_strat(round_number, eco, op_eco, game_matrix, player0_or_
 
 def short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    A strategy which picks the best option avaliable for winning the current round.
-
-    Parameters
-    ----------
-    hmmm if we get rid of support ennumeration this would be hella smaller like half the size (just the docstring)
-
+    A strategy which picks the best (short term) option avaliable for winning the current round.
     """
     short_term.stratname = "short term"
     return [0] * min(int(eco) - 1, 3) + [1]
@@ -388,11 +383,10 @@ def save_first_n_rounds(round_number, eco, op_eco, game_matrix, player0_or_1=0, 
     
 def save_first_n_rounds_and_stay_above_m_eco(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    saves for the first n rounds
-    afterwhich it plays short_term but saves if eco falls below m
+    A strategy which saves for the first n rounds, then plays short_term but saves if eco falls below 4.
     """
-    m=4
     save_first_n_rounds_and_stay_above_m_eco.stratname = "save first " + str(n) + " and stay above " + str(m) + " eco"
+    m = 4
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if round_number <= n or eco < m:
         strat = [1] + [0] * min(int(eco) - 1, 3)
@@ -400,22 +394,21 @@ def save_first_n_rounds_and_stay_above_m_eco(round_number, eco, op_eco, game_mat
 
 def random_strat(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    pick a random option with equal likelyhood
+    A strategy which picks a random option with equal likelyhood each round.
     """
     random_strat.stratname = "random"
     return [1 / min(int(eco), 4)] * min(int(eco), 4)
 
 def save_til_death(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    always saves
+    A strategy which always saves.
     """
     save_til_death.stratname = "always save"
     return [1] + [0] * min(int(eco) - 1, 3)
 
 def bi4nxt(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    saves till it can fullbuy
-    if it can fulbuy nextround picking a stronger option than saving, it will do so
+    A strategy which saves until it can full buy, if it can full buy next round picking a stronger option than saving, it will do so.
     """
     bi4nxt.stratname = "buy for next"
     strat = [0, 0, 0, 1]
@@ -429,7 +422,7 @@ def bi4nxt(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_b
 
 def never_half(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    plays short_term, but littlebuys instead of halfbuys
+    A strategy which plays short_term, but small buys instead of half buys.
     """
     never_half.stratname = "never half"
     if eco < 3 or eco > 4:
@@ -440,7 +433,7 @@ def never_half(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, loss
 
 def save_first_n_rounds_then_lil_then_short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    saves n rounds, then little buys FOR 1 ROUND, then just plays short term
+    A strategy which saves for n rounds, then little buys for 1 round, then just plays short term.
     """
     save_first_n_rounds_then_lil_then_short_term.stratname = "save first " + str(n) + " then 1 lilbuy then short term"
     if round_number < n:
@@ -460,7 +453,7 @@ def save_first_n_rounds_then_lil_then_short_term(round_number, eco, op_eco, game
 
 def save_first_n_rounds_then_half_then_short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    saves n rounds, then half buys FOR 1 ROUND, then just plays short term
+    A strategy which saves for n rounds, then half buys for 1 round, then just plays short term.
     """
     save_first_n_rounds_then_half_then_short_term.stratname = "save first " + str(n) + " then 1 halfbuy then short term"
     if round_number < n:
@@ -480,7 +473,7 @@ def save_first_n_rounds_then_half_then_short_term(round_number, eco, op_eco, gam
 
 def save_if_down_on_money(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    save when less money than opponent
+    A strategy which saves when it has less money than the opponent.
     """
     save_if_down_on_money.stratname = "save when down on money"
     if eco < op_eco:
@@ -491,7 +484,7 @@ def save_if_down_on_money(round_number, eco, op_eco, game_matrix, player0_or_1=0
 
 def bi4nxt_2_rounds(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    Finds the best option for including the next 3 rounds based on expected wins and eco.
+    A strategy which finds the best option for including the next 2 rounds based on expected wins and eco.
     """
     bi4nxt_2_rounds.stratname = "buy for next 2 rounds"
     strat = [0] * min(int(eco), 4)
@@ -501,7 +494,7 @@ def bi4nxt_2_rounds(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5,
 
 def support_enumerator_strat2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    Pick first equilibria it finds, dunno if this should be a stratergy...
+    A strategy which picks short term nash equilibria for the current round and always takes the largest buy on the last rounds.
     """
     support_enumerator_strat2.stratname = "support enumerated 2"
     equilibria = nash.Game(game_matrix).support_enumeration()
@@ -516,7 +509,7 @@ def support_enumerator_strat2(round_number, eco, op_eco, game_matrix, player0_or
 
 def save_til_4_strat2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    A strategy which saves until its eco is greater than or equal to 4.
+    A strategy which saves until its eco is greater than or equal to 4 and always takes the largest buy on the last rounds.
     """
     save_til_4_strat2.stratname = "save til 4 pt.2"
     strat = [0, 0, 0, 1]
@@ -530,7 +523,7 @@ def save_til_4_strat2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=
 
 def save_til_n_eco2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    A strategy which saves until its eco is greater than or equal to a given n.
+    A strategy which saves until its eco is greater than or equal to a given n and always takes the largest buy on the last rounds.
     """
     save_til_n_eco2.stratname = "save til " + str(n) + " eco 2"
     strat = [0] * min(int(eco) - 1, 3) + [1]
@@ -544,7 +537,7 @@ def save_til_n_eco2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5,
 
 def save_first_n_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    A strategy which saves for the first n rounds, then just plays short_term.
+    A strategy which saves for the first n rounds, then just plays short_term and always takes the largest buy on the last rounds.
     """
     save_first_n_rounds2.stratname = "save first " + str(n) + " rounds 2"
     strat = [0] * min(int(eco) - 1, 3) + [1]
@@ -558,10 +551,10 @@ def save_first_n_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0,
     
 def save_first_n_rounds_and_stay_above_m_eco2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    saves for the first n rounds
-    afterwhich it plays short_term but saves if eco falls below m
+    A strategy which saves for the first n rounds, then plays short_term but saves if eco falls below 4 and always takes the largest buy 
+    on the last rounds.
     """
-    m=4
+    m = 4
     save_first_n_rounds_and_stay_above_m_eco2.stratname = "save first " + str(n) + " and stay above " + str(m) + " eco 2"
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if round_number <= n or eco < m:
@@ -574,8 +567,8 @@ def save_first_n_rounds_and_stay_above_m_eco2(round_number, eco, op_eco, game_ma
 
 def bi4nxt2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    saves till it can fullbuy
-    if it can fulbuy nextround picking a stronger option than saving, it will do so
+    A strategy which saves until it can full buy and if it can full buy next round picking a stronger option than saving, it will do so 
+    and always takes the largest buy on the last rounds.
     """
     bi4nxt2.stratname = "buy for next 2"
     strat = [0, 0, 0, 1]
@@ -593,7 +586,7 @@ def bi4nxt2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_
 
 def never_half2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    plays short_term, but littlebuys instead of halfbuys
+    A strategy which plays short_term, but small buys instead of half buys and always takes the largest buy on the last rounds.
     """
     never_half2.stratname = "never half 2"
     if eco < 3 or eco > 4:
@@ -608,7 +601,7 @@ def never_half2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, los
 
 def save_if_down_on_money2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    save when less money than opponent
+    A strategy which saves when it has less money than the opponent and always takes the largest buy on the last rounds.
     """
     save_if_down_on_money2.stratname = "save when down on money 2"
     if eco < op_eco:
@@ -623,7 +616,8 @@ def save_if_down_on_money2(round_number, eco, op_eco, game_matrix, player0_or_1=
 
 def bi4nxt_2_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    Finds the best option for including the next 3 rounds based on expected wins and eco.
+    A strategy which finds the best option for including the next 2 rounds based on expected wins and eco and always takes the largest buy 
+    on the last rounds.
     """
     bi4nxt_2_rounds2.stratname = "buy for next 2 rounds pt.2"
     strat = [0] * min(int(eco), 4)
@@ -637,7 +631,7 @@ def bi4nxt_2_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5
 
 def save_til_death2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    always saves
+    A strategy which always saves and always takes the largest buy on the last rounds.
     """
     save_til_death2.stratname = "always save 2"
     strat = [1] + [0] * min(int(eco) - 1, 3)
