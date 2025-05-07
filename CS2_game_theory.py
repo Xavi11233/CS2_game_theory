@@ -14,10 +14,10 @@ complete_options_list = [
                         ]
 
 complete_casual_options_list = [
-                                [0.50, 0.45, 0.30, 0.20],
-                                [0.55, 0.50, 0.45, 0.30],
-                                [0.70, 0.55, 0.50, 0.40],
-                                [0.80, 0.70, 0.60, 0.50]
+                                [0.50, 0.50 - 0.05, 0.50 - 0.20, 0.50 - 0.40],
+                                [0.50 + 0.05, 0.50, 0.50 - 0.15, 0.50 - 0.25],
+                                [0.50 + 0.20, 0.50 + 0.15, 0.50, 0.50 - 0.10],
+                                [0.50 + 0.40, 0.50 + 0.25, 0.50 + 0.10, 0.50]
                                 ]
 
 win_rewards = [2, 1.5, 1, 1]
@@ -356,43 +356,43 @@ def short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, loss
     short_term.stratname = "short term"
     return [0] * min(int(eco) - 1, 3) + [1]
 
-def eco_til_4_strat(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_til_4_strat(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
     A strategy which saves until its eco is greater than or equal to 4.
     """
-    eco_til_4_strat.stratname = "eco til 4"
+    save_til_4_strat.stratname = "save til 4"
     strat = [0, 0, 0, 1]
     if eco < 4:
         strat = [1] + [0] * min(int(eco) - 1, 3)
     return strat
 
-def eco_til_n_eco(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_til_n_eco(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
     A strategy which saves until its eco is greater than or equal to a given n.
     """
-    eco_til_n_eco.stratname = "eco til n eco"
+    save_til_n_eco.stratname = "save til " + str(n) + " eco"
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if eco < n:
         strat = [1] + [0] * min(int(eco) - 1, 3)
     return strat
 
-def eco_first_n_rounds(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_first_n_rounds(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
     A strategy which saves for the first n rounds, then just plays short_term.
     """
-    eco_first_n_rounds.stratname = "eco first " + str(n) + " rounds"
+    save_first_n_rounds.stratname = "save first " + str(n) + " rounds"
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if round_number < n:
         strat = [1] + [0] * min(int(eco) - 1, 3)
     return strat
     
-def eco_first_n_rounds_and_stay_above_m_eco(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_first_n_rounds_and_stay_above_m_eco(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    ecos for the first n rounds
-    afterwhich it plays short_term but ecos if eco falls below m
+    saves for the first n rounds
+    afterwhich it plays short_term but saves if eco falls below m
     """
     m=4
-    eco_first_n_rounds_and_stay_above_m_eco.stratname = "eco first " + str(n) + " and stay above " + str(m) + " eco"
+    save_first_n_rounds_and_stay_above_m_eco.stratname = "save first " + str(n) + " and stay above " + str(m) + " eco"
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if round_number <= n or eco < m:
         strat = [1] + [0] * min(int(eco) - 1, 3)
@@ -405,17 +405,17 @@ def random_strat(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, lo
     random_strat.stratname = "random"
     return [1 / min(int(eco), 4)] * min(int(eco), 4)
 
-def eco_til_death(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_til_death(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    always ecos
+    always saves
     """
-    eco_til_death.stratname = "champ"
+    save_til_death.stratname = "always save"
     return [1] + [0] * min(int(eco) - 1, 3)
 
 def bi4nxt(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    ecos till it can fullbuy
-    if it can fulbuy nextround picking a stronger option than ecoing, it will do so
+    saves till it can fullbuy
+    if it can fulbuy nextround picking a stronger option than saving, it will do so
     """
     bi4nxt.stratname = "buy for next"
     strat = [0, 0, 0, 1]
@@ -438,11 +438,11 @@ def never_half(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, loss
         strat = [0, 1, 0]
     return strat
 
-def eco_first_n_rounds_then_lil_then_short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_first_n_rounds_then_lil_then_short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    ecos n rounds, then little buys FOR 1 ROUND, then just plays short term
+    saves n rounds, then little buys FOR 1 ROUND, then just plays short term
     """
-    eco_first_n_rounds_then_lil_then_short_term.stratname = "eco first " + str(n) + " then 1 lilbuy then short term"
+    save_first_n_rounds_then_lil_then_short_term.stratname = "save first " + str(n) + " then 1 lilbuy then short term"
     if round_number < n:
         strat = [1] + [0] * min(int(eco) - 1, 3)
     if round_number == n:
@@ -458,11 +458,11 @@ def eco_first_n_rounds_then_lil_then_short_term(round_number, eco, op_eco, game_
         strat = min(int(eco) - 1, 3) * [0] + [1]
     return strat
 
-def eco_first_n_rounds_then_half_then_short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_first_n_rounds_then_half_then_short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    ecos n rounds, then half buys FOR 1 ROUND, then just plays short term
+    saves n rounds, then half buys FOR 1 ROUND, then just plays short term
     """
-    eco_first_n_rounds_then_half_then_short_term.stratname = "eco first " + str(n) + " then 1 halfbuy then short term"
+    save_first_n_rounds_then_half_then_short_term.stratname = "save first " + str(n) + " then 1 halfbuy then short term"
     if round_number < n:
         strat = [1] + [0] * min(int(eco) - 1, 3)
     if round_number == n:
@@ -478,11 +478,11 @@ def eco_first_n_rounds_then_half_then_short_term(round_number, eco, op_eco, game
         strat = min(int(eco) - 1, 3) * [0] + [1]
     return strat
 
-def eco_if_down_on_money(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_if_down_on_money(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    eco when less money than opponent
+    save when less money than opponent
     """
-    eco_if_down_on_money.stratname = "eco when down on money"
+    save_if_down_on_money.stratname = "save when down on money"
     if eco < op_eco:
         strat = [1] + [0] * min(int(eco) - 1, 3)
     else:
@@ -514,11 +514,11 @@ def support_enumerator_strat2(round_number, eco, op_eco, game_matrix, player0_or
     #print(f"player {player0_or_1} has strat:{strat[player0_or_1]} giving odds {complete_options_list[list(strat[player0_or_1]).index(1)]}")
     return strat[player0_or_1]
 
-def eco_til_4_strat2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_til_4_strat2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
     A strategy which saves until its eco is greater than or equal to 4.
     """
-    eco_til_4_strat2.stratname = "eco til 4 pt.2"
+    save_til_4_strat2.stratname = "save til 4 pt.2"
     strat = [0, 0, 0, 1]
     if eco < 4:
         strat = [1] + [0] * min(int(eco) - 1, 3)
@@ -528,11 +528,11 @@ def eco_til_4_strat2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
-def eco_til_n_eco2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_til_n_eco2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
     A strategy which saves until its eco is greater than or equal to a given n.
     """
-    eco_til_n_eco2.stratname = "eco til n eco 2"
+    save_til_n_eco2.stratname = "save til " + str(n) + " eco 2"
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if eco < n:
         strat = [1] + [0] * min(int(eco) - 1, 3)
@@ -542,11 +542,11 @@ def eco_til_n_eco2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, 
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
-def eco_first_n_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_first_n_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
     A strategy which saves for the first n rounds, then just plays short_term.
     """
-    eco_first_n_rounds2.stratname = "eco first " + str(n) + " rounds 2"
+    save_first_n_rounds2.stratname = "save first " + str(n) + " rounds 2"
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if round_number < n:
         strat = [1] + [0] * min(int(eco) - 1, 3)
@@ -556,13 +556,13 @@ def eco_first_n_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0, 
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
     
-def eco_first_n_rounds_and_stay_above_m_eco2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_first_n_rounds_and_stay_above_m_eco2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    ecos for the first n rounds
-    afterwhich it plays short_term but ecos if eco falls below m
+    saves for the first n rounds
+    afterwhich it plays short_term but saves if eco falls below m
     """
     m=4
-    eco_first_n_rounds_and_stay_above_m_eco2.stratname = "eco first " + str(n) + " and stay above " + str(m) + " eco 2"
+    save_first_n_rounds_and_stay_above_m_eco2.stratname = "save first " + str(n) + " and stay above " + str(m) + " eco 2"
     strat = [0] * min(int(eco) - 1, 3) + [1]
     if round_number <= n or eco < m:
         strat = [1] + [0] * min(int(eco) - 1, 3)
@@ -574,8 +574,8 @@ def eco_first_n_rounds_and_stay_above_m_eco2(round_number, eco, op_eco, game_mat
 
 def bi4nxt2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    ecos till it can fullbuy
-    if it can fulbuy nextround picking a stronger option than ecoing, it will do so
+    saves till it can fullbuy
+    if it can fulbuy nextround picking a stronger option than saving, it will do so
     """
     bi4nxt2.stratname = "buy for next 2"
     strat = [0, 0, 0, 1]
@@ -606,11 +606,11 @@ def never_half2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, los
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
-def eco_if_down_on_money2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_if_down_on_money2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    eco when less money than opponent
+    save when less money than opponent
     """
-    eco_if_down_on_money2.stratname = "eco when down on money 2"
+    save_if_down_on_money2.stratname = "save when down on money 2"
     if eco < op_eco:
         strat = [1] + [0] * min(int(eco) - 1, 3)
     else:
@@ -635,11 +635,11 @@ def bi4nxt_2_rounds2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=5
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
     return strat
 
-def eco_til_death2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
+def save_til_death2(round_number, eco, op_eco, game_matrix, player0_or_1=0, n=0, losses_bonus1=0, losses_bonus2=0, first_half=False):
     """
-    always ecos
+    always saves
     """
-    eco_til_death2.stratname = "champ 2"
+    save_til_death2.stratname = "always save 2"
     strat = [1] + [0] * min(int(eco) - 1, 3)
     if round_number == 12:
         strat = short_term(round_number, eco, op_eco, game_matrix, player0_or_1=0)
@@ -660,7 +660,7 @@ def accurate_cs_game(strat1, strat2, n=5, loss_bonuses=True):
     strat2 : function
         The strategy function for player 2.
     n : int, optional
-        A chosen value for strategies such as eco_first_n_rounds, by default 5.
+        A chosen value for strategies such as save_first_n_rounds, by default 5.
     loss_bonuses : bool, optional
         If True, players receive a loss bonus after losing a round, by default True.
 
@@ -766,7 +766,7 @@ def graph_it_out(team1score, team2score, team1money, team2money, strat1, strat2,
         Displays the graph to compare the points over time and money over time for each team.
 
     """
-    fig, (ax1, ax2) = plt.subplots(2)
+    fig, (ax1, ax2) = plt.subplots(2, figsize = (16, 8.1))
     ax_2a = ax1.twinx()
     ax_2b = ax2.twinx()
     ax1.set_title("Team 1: " + strat1.stratname)
@@ -800,7 +800,7 @@ def find_possible_strategies(play_to=13, repetitions=10_000, accurate_game=False
     accurate_game : bool, optional
         A boolean deciding whether the game format is accurate game (True) or simply first to some number of wins, by default False.
     n : int, optional
-        A chosen value for strategies such as eco_first_n_rounds, by default 5.
+        A chosen value for strategies such as save_first_n_rounds, by default 5.
 
     Returns
     -------
@@ -840,7 +840,7 @@ def play_m_games(strat1, strat2, n=5, m=100, play_to=13, accurate_game=False):
     strat2 : function
         The strategy function for player 2.
     n : int, optional
-        A chosen value for strategies such as eco_first_n_rounds, by default 5.
+        A chosen value for strategies such as save_first_n_rounds, by default 5.
     m : int, optional
         The number of games played between the strategies, by default 100.
     play_to : int or float, optional
@@ -865,17 +865,17 @@ def play_m_games(strat1, strat2, n=5, m=100, play_to=13, accurate_game=False):
         scores[winner] += 1
     return scores
 
-def compare_eco_first_n_with_other_strategies_for_different_n(eco_first_n_selection=eco_first_n_rounds, other_strategy=short_term, 
-                                                              play_to=13, number_of_games=1_000, accurate_game=False):
+def compare_save_first_n_with_other_strategies_for_different_n(save_first_n_selection=save_first_n_rounds, other_strategy=short_term, 
+                                                               play_to=13, number_of_games=1_000, accurate_game=False):
     """
-    A function to return winrates of eco first n against another strategy for varying values of n, from 0 to the play_to value.
+    A function to return winrates of save first n against another strategy for varying values of n, from 0 to the play_to value.
 
     Parameters
     ----------
-    eco_first_n_selection : function, optional
-        The chosen strategy which depends on n, such as eco_first_n_rounds_then_lil_then_short_term, by default eco_first_n_rounds.
+    save_first_n_selection : function, optional
+        The chosen strategy which depends on n, such as save_first_n_rounds_then_lil_then_short_term, by default save_first_n_rounds.
     other_strategy : function, optional
-        The chosen strategy to play against the eco_first_n_selection strategy, by default short_term.
+        The chosen strategy to play against the save_first_n_selection strategy, by default short_term.
     play_to : int or float, optional
         The required number of round wins for a player to win a game, by default 13.
     number_of_games : int, optional
@@ -886,35 +886,35 @@ def compare_eco_first_n_with_other_strategies_for_different_n(eco_first_n_select
     Returns
     -------
     tuple
-        A tuple containing two lists; eco_first_n_winrates and other_strategy_winrates.
-        eco_first_n_winrates : list
-            A list of the win rates for eco_first_n strategy for values of n from 0 to play_to.
+        A tuple containing two lists; save_first_n_winrates and other_strategy_winrates.
+        save_first_n_winrates : list
+            A list of the win rates for save_first_n strategy for values of n from 0 to play_to.
         other_strategy_winrates : list
             A list of the win rates for the other strategy for values of n from 0 to play_to.
 
     """
-    eco_first_first_n_winrates = []
+    save_first_first_n_winrates = []
     other_strategy_winrates = []
     for n in range(0, play_to):
-        eco_first_first_n_wins, other_strategy_wins = play_m_games(strat1=eco_first_n_selection, strat2=other_strategy, n=n, 
-                                                                   m=number_of_games, play_to=play_to, accurate_game=accurate_game)
-        eco_first_first_n_winrate = eco_first_first_n_wins / number_of_games
+        save_first_first_n_wins, other_strategy_wins = play_m_games(strat1=save_first_n_selection, strat2=other_strategy, n=n, 
+                                                                    m=number_of_games, play_to=play_to, accurate_game=accurate_game)
+        save_first_first_n_winrate = save_first_first_n_wins / number_of_games
         other_strategy_winrate = other_strategy_wins / number_of_games
-        eco_first_first_n_winrates.append(eco_first_first_n_winrate)
+        save_first_first_n_winrates.append(save_first_first_n_winrate)
         other_strategy_winrates.append(other_strategy_winrate)
-    return eco_first_first_n_winrates, other_strategy_winrates
+    return save_first_first_n_winrates, other_strategy_winrates
 
-def graph_eco_first_n_against_other_strategy(eco_first_n_selection=eco_first_n_rounds, other_strategy=short_term, play_to=13, 
-                                             number_of_games=1_000, accurate_game=False):
+def graph_save_first_n_against_other_strategy(save_first_n_selection=save_first_n_rounds, other_strategy=short_term, play_to=13, 
+                                              number_of_games=1_000, accurate_game=False):
     """
-    A function to show interactions on a graph between eco first n against another strategy depending on the value of n.
+    A function to show interactions on a graph between save first n against another strategy depending on the value of n.
 
     Parameters
     ----------
-    eco_first_n_selection : function, optional
-        The chosen strategy which depends on n, such as eco_first_n_rounds_then_lil_then_short_term, by default eco_first_n_rounds.
+    save_first_n_selection : function, optional
+        The chosen strategy which depends on n, such as save_first_n_rounds_then_lil_then_short_term, by default save_first_n_rounds.
     other_strategy : function, optional
-        The chosen strategy to play against the eco_first_n_selection strategy, by default short_term.
+        The chosen strategy to play against the save_first_n_selection strategy, by default short_term.
     play_to : int or float, optional
         The required number of round wins for a player to win a game, by default 13.
     number_of_games : int, optional
@@ -929,17 +929,17 @@ def graph_eco_first_n_against_other_strategy(eco_first_n_selection=eco_first_n_r
         Displays the graph comparing win rates for different values of n.
 
     """
-    eco_first_n_winrates = compare_eco_first_n_with_other_strategies_for_different_n(eco_first_n_selection=eco_first_n_selection, 
-                                                                                     other_strategy=other_strategy, play_to=play_to, 
-                                                                                     number_of_games=number_of_games, 
-                                                                                     accurate_game=accurate_game)[0]
+    save_first_n_winrates = compare_save_first_n_with_other_strategies_for_different_n(save_first_n_selection=save_first_n_selection, 
+                                                                                       other_strategy=other_strategy, play_to=play_to, 
+                                                                                       number_of_games=number_of_games, 
+                                                                                       accurate_game=accurate_game)[0]
     fig, ax = plt.subplots()
-    ax.set_title(eco_first_n_selection.stratname + " vs " + other_strategy.stratname)
+    ax.set_title(save_first_n_selection.stratname + " vs " + other_strategy.stratname)
     ax.set_ylabel("winrate")
     ax.set_xlabel("n")
     ax.set(ylim=(0, 1))
     ax.set(xlim=(0, play_to))
-    plt.plot(eco_first_n_winrates, 'r-x')
+    plt.plot(save_first_n_winrates, 'r-x')
 
     plt.show()
 
@@ -953,7 +953,7 @@ def generate_interaction_matrix(strategies, n=5, sample_size=1_000, decimal_plac
     strategies : list
         A list of functions which are the strategies for our interaction matrix.
     n : int, optional
-        A chosen value for strategies such as eco_first_n_rounds, by default 5.
+        A chosen value for strategies such as save_first_n_rounds, by default 5.
     sample_size : int, optional
         A chosen number of games to simulate play to find win rates, by default 1,000.
     decimal_places : int, optional
@@ -1021,7 +1021,7 @@ def replicator_dynamics(game_matrix, iterations=100, samples=100):
     """
     timepoints = np.linspace(0, iterations, samples)
     game = nash.Game(game_matrix)
-    replicator_game = game.replicator_dynamics(y0=[1 / 19, 1 / 19, 1 / 19, 1 / 19, 1 / 19, 2 / 19, 2 / 19, 1 / 19, 1 / 19, 2 / 19, 1 / 19, 1 / 19, 2 / 19, 2 / 19, 1 / 19, 1 / 19, 2 / 19, 1 / 19, 1 / 19], timepoints=timepoints)
+    replicator_game = game.replicator_dynamics(timepoints=timepoints)
     return replicator_game
     
 def replicator_dynamics_graph(outcome_array, strat_names):
@@ -1056,23 +1056,6 @@ def replicator_dynamics_graph(outcome_array, strat_names):
     plt.show()
 
 
-# Replicator dynamics stuff:
-strategies = [short_term, eco_first_n_rounds, eco_first_n_rounds_then_lil_then_short_term, eco_first_n_rounds_then_half_then_short_term,
-             eco_if_down_on_money, eco_til_4_strat, eco_til_n_eco, eco_first_n_rounds_and_stay_above_m_eco, random_strat, bi4nxt, 
-             never_half, eco_if_down_on_money2, eco_til_4_strat2, eco_til_n_eco2, eco_first_n_rounds2, 
-             eco_first_n_rounds_and_stay_above_m_eco2, bi4nxt2, never_half2, eco_til_death2]
-
-interaction_mat = generate_interaction_matrix(strategies, n=3, sample_size=5_000, accurate_game=True)
-display_interaction_matrix(interaction_mat, strategies)
-
-game_outcome = replicator_dynamics(game_matrix=interaction_mat, iterations=5_000, samples=5_000)
-stratnames = []
-for i in strategies:
-    stratnames.append(i.stratname)
-replicator_dynamics_graph(game_outcome, stratnames)
-
-#-------------------------------------------------------------------------------------------------------------------------------------------
-
-scores, money = accurate_cs_game(strat1=eco_til_n_eco, strat2=eco_til_n_eco2, n=5, loss_bonuses=True)
+scores, money = accurate_cs_game(strat1=bi4nxt2, strat2=short_term, n=5, loss_bonuses=True)
 team1score, team2score, team1money, team2money = unpack_points_over_time_and_money_over_time(scores, money)
-graph_it_out(team1score, team2score, team1money, team2money, strat1=bi4nxt, strat2=eco_til_n_eco2, first_to=13, max_money=16)
+graph_it_out(team1score, team2score, team1money, team2money, strat1=bi4nxt2, strat2=short_term, first_to=13, max_money=16)
