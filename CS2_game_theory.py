@@ -1050,6 +1050,22 @@ def replicator_dynamics_graph(outcome_array, strat_names):
     plt.show()
 
 
+#Single game:
 scores, money = accurate_cs_game(strat1=bi4nxt2, strat2=short_term, n=5, loss_bonuses=True)
 team1score, team2score, team1money, team2money = unpack_points_over_time_and_money_over_time(scores, money)
 graph_it_out(team1score, team2score, team1money, team2money, strat1=bi4nxt2, strat2=short_term, first_to=13, max_money=16)
+
+
+# Replicator dynamics stuff:
+strategies = [short_term, save_first_n_rounds, save_if_down_on_money, save_til_4_strat, save_til_n_eco, bi4nxt, 
+              never_half, save_if_down_on_money2, save_til_4_strat2, save_til_n_eco2, save_first_n_rounds2, 
+              save_first_n_rounds_and_stay_above_m_eco2, bi4nxt2, never_half2]
+
+interaction_mat = generate_interaction_matrix(strategies, n=3, sample_size=10_000, accurate_game=True)
+display_interaction_matrix(interaction_mat, strategies)
+
+game_outcome = replicator_dynamics(game_matrix=interaction_mat, iterations=1_000, samples=5_000)
+stratnames = []
+for i in strategies:
+    stratnames.append(i.stratname)
+replicator_dynamics_graph(game_outcome, stratnames)
